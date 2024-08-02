@@ -1,1 +1,0 @@
-# documentation for the doubleword instruction set

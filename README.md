@@ -1,5 +1,5 @@
 # doubleword
-`doubleword` is a 32-bit fantasy computer architecture, created as a hobby project, for the experience of designing and writing various components - including an emulator, assembler, and multitasking operating system.
+`doubleword` is a 32-bit fantasy computer architecture, created as a hobby project, for the experience of designing, programing, and documenting various components involved in ISA and OS development - including an emulator, assembler, and multitasking operating system - as well as the CPU architecture itself.
 
 # project structure
 Each subfolder under the `/src` directory is its own project within this repository. As such, they all contain their own READMEs and build scripts. 

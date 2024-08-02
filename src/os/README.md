@@ -1,2 +1,2 @@
 # wordOS: the doubleword operating system
-This folder contains documentation and code for wordOS, in addition to firmware for the doubleword system. Basically, there's everything here from when the machine first powers on, to when it's up and running.
+This folder contains documentation and code for wordOS, in addition to firmware for the `doubleword` system. Basically, there's everything here from when the machine first powers on, to when it's up and running.

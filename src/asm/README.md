@@ -1,5 +1,5 @@
 # doubleword assembler
-converts doubleword assembly into doubleword binaries
+converts `doubleword` assembly into doubleword binaries
 
 # info on program arguments and usage
 
