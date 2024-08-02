@@ -14,7 +14,7 @@ placeholder|placeholder
 # registers
 register|details
 ---|---
-`%r0`|general purpose
+`%r0`|zero constant
 `%r1`|general purpose
 `%r2`|general purpose
 `%r3`|general purpose
@@ -28,7 +28,8 @@ register|details
 `%scr`|system control register
 
 # %r0 - %r7
-`%r0`, `%r1`, `%r2`, `%r3`, `%r4`, `%r5`, `%r6`, and `%r7` are all general-purpose registers available to use. Some operations may store results in these registers.
+`%r1`, `%r2`, `%r3`, `%r4`, `%r5`, `%r6`, and `%r7` are all general-purpose registers available to use. Some operations may store results in these registers.
+`%r0` is a constant register that ignores all writes. In case you couldn't tell, it's stuck at zero.
 
 # %sp
 `%sp` is used to store the current stack pointer. Return addresses during subroutine calls will be pushed here. Additionally, programs can put data onto the stack to save them.
