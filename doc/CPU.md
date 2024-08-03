@@ -67,7 +67,7 @@ Invalid Opcode|`0x7`
 ### 0x0: divide by zero
 The Divide By Zero exception occurs when a `DIV` or `IDIV` instruction is encountered that attempts to divide by zero.
 ### 0x1: machine error
-The Machine Error exception occurs when some sort of external hardware error occurs. (for example, your 5400 RPM hard drive being set to 11,000 RPM and exploding, or perhaps you turn the monitor on and off 20 times a second)
+The Machine Error exception occurs when some sort of hardware error occurs. (for example, your hard drive randomly exploding, or perhaps you turn the monitor on and off 20 times a second)
 ### 0x2: breakpoint
 A Breakpoint exception occurs when the `BREAK` instruction is executed. Upon a breakpoint, the CPU dumps its registers and debug information over the debug serial port. (note to self: add other things?)
 ### 0x3: handler fault
@@ -75,7 +75,7 @@ A Handler Fault occurs if an exception occurs while attempting to handle another
 ### 0x4: privilege fault
 If code is executed that attempts to access privileged resources while in User mode, a Privilege Fault will occur. Examples of privileged resources include system control registers like `%scr` or `%itp`, or privileged instructions such as `HLT`, `IN` or `OUT`, or `IRET`.
 ### 0x5: reserved
-Might add memory management in the future. (or maybe never) For now, this should never come up.
+Reserved exception vector.
 ### 0x6: alignment fault
 When the CPU attempts to load an instruction not aligned to 4 bytes, an Alignment Fault occurs. It's usually indicative of some weird memory errors.
 ### 0x7: invalid opcode
@@ -92,9 +92,19 @@ mouse|`0xFC`
 keyboard|`0xFD`
 hard disk|`0xFE`
 timer (PIT)|`0xFF`
+As the `doublebox` architecture lacks a sophisticated interrupt controller chip, specific interrupts are unable to be masked. Instead, programs running on the computer must use the I/O bus to enable or disable specific device interrupts.
+
 
 ## the Interrupt Vector Table (IVT)
 The IVT is a collection of 256 pointers to interrupt handlers. Each memory address is 32 bits wide, so the IVT is 1024 bytes long. The IVT can reside anywhere in memory, as the pointer to it (in `%itp`) can be modified.
 
 # instruction set
 nothing here yet
+
+# memory setup
+By default, the `doubleword` emulator is set up with 32 MB of RAM.
+
+# boot process
+The `doubleword` architecture has a 3-step boot process. First, a firmware program stored in ROM is loaded into memory beginning at `0x1000`. At this point, CPU execution begins. All general-purpose registers are zeroed out, in addition to `%itp`. Interrupts are disabled. The stack pointer is set to to the next 32-bit boundary below the loading point of the firmware, at `0x0FFC`, as it grows downward in memory.
+The firmware initializes hardware and prepares the computer for the second part of the boot process.
+The last thing that the system firmware does is scan for any attached hard drives marked as bootable. If multiple are found, a menu is shown which will ask the user to pick a volume. If there are no bootable drives, the firmware will display an error and hang. (note to self: add more types of storage later?)
