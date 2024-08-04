@@ -4,12 +4,8 @@ Peripherals are typically accessed through port-mapped I/O. Details on this can 
 Memory values are stored in little-endian byte order. (also: as such, the stack grows "down" in memory)
 (note to self: endianness is only for memory, so remember to swap bytes in the emulator when loading/storing values to/from registers)
 
-# instruction decoding
+# instruction decoding & instruction set
 `doubleword` instructions are fixed-length, at 32 bits. Instructions should be aligned to 4-byte boundaries. Otherwise, an exception will occur.
-A typical instruction is laid out as follows:
-placeholder|placeholder
----|---
-placeholder|placeholder
 
 # registers
 register|details
@@ -49,8 +45,7 @@ The IVT is a section of memory containing pointers to different interrupt handle
 `%scr` is the System Control Register, and contains various bits of information relevant to the state of the CPU. `%scr` is a privileged register, meaning that attempting to read or write to it while in User mode will result in a Privilege Exception.
 
 # exceptions & interrupts
-All interrupt vectors not used here are general-purpose.
-
+All interrupt vectors not included in these specifications should be assumed to be general-purpose and available for software.
 ## exceptions
 All CPU exceptions are processed as interrupts. 8 out of the 256 possible interrupt vectors are dedicated to exception handling.
 exception|interrupt vector
@@ -81,7 +76,6 @@ When the CPU attempts to load an instruction not aligned to 4 bytes, an Alignmen
 ### 0x7: invalid opcode
 An Invalid Opcode exception occurs when the CPU attempts to execute an instruction that doesn't exist. Additionally, if invalid control values are set, or invalid operands are included, those would also constitute an Invalid Opcode exception.
 
-
 ## interrupts
 These are standardized interrupts used by system peripherals. See `IO.md` for more details.
 interrupt type|interrupt vector
@@ -94,17 +88,19 @@ hard disk|`0xFE`
 timer (PIT)|`0xFF`
 As the `doublebox` architecture lacks a sophisticated interrupt controller chip, specific interrupts are unable to be masked. Instead, programs running on the computer must use the I/O bus to enable or disable specific device interrupts.
 
-
 ## the Interrupt Vector Table (IVT)
 The IVT is a collection of 256 pointers to interrupt handlers. Each memory address is 32 bits wide, so the IVT is 1024 bytes long. The IVT can reside anywhere in memory, as the pointer to it (in `%itp`) can be modified.
-
-# instruction set
-nothing here yet
 
 # memory setup
 By default, the `doubleword` emulator is set up with 32 MB of RAM.
 
 # boot process
+### firmware and system setup
 The `doubleword` architecture has a 3-step boot process. First, a firmware program stored in ROM is loaded into memory beginning at `0x1000`. At this point, CPU execution begins. All general-purpose registers are zeroed out, in addition to `%itp`. Interrupts are disabled. The stack pointer is set to to the next 32-bit boundary below the loading point of the firmware, at `0x0FFC`, as it grows downward in memory.
+### system initialization
 The firmware initializes hardware and prepares the computer for the second part of the boot process.
-The last thing that the system firmware does is scan for any attached hard drives marked as bootable. If multiple are found, a menu is shown which will ask the user to pick a volume. If there are no bootable drives, the firmware will display an error and hang. (note to self: add more types of storage later?)
+The last thing that the system firmware does is scan for any attached hard drives marked as bootable. If multiple are found, a menu is shown which will ask the user to pick a volume. If just one is found, it will automatically be booted. If there are no bootable drives, the firmware will display an error and hang. (note to self: add more types of storage later?)
+### "bootable" requirements
+A drive is considered bootable if its first sector (referred to as sector zero) begins with `0xEFFE`
+### from the bootloader onwards
+Continuing on, the bootloader is now in control of execution. It will load the rest of the operating system from disk, and execution will proceed from there, with the system fully booted.
