@@ -17,16 +17,34 @@ This register always returns zero upon reads.
 ### 0x01: Error Code Register (read-only)
 If an error occurs in the power controller after a command has been sent via the configuration register, the error will be reported here. If there is no error, the register will read zero.
 ### 0x02: Configuration Register (to be implemented)
-# placeholder
-#### 0x03: Status Register (read-only)
-The contents of this register will change depending on the status of the device configured.
-For example, if a poweron command is sent to the hard disk controller, the poweron will not take place immediately. The hard disks may take time to spin up. Refer to the below table for a list of statuses.
+The lower 8 bits of a write to this port will be interpreted as follows:
+(assuming "bit 7" is the MSB and "bit 0" is the LSB)
+### [7:6]: Command
+value|command
+---|---
+`00`|Query state of device
+`01`|Power on device
+`10`|Power off device
+`11`|Reserved
+### [5:0]: Device ID
+value|id
+---|---
+`0`|Drive Controller
+`1`|Input Controller
+`2`|Graphics Controller
+`3`|Serial Port
+everything else|Reserved
+#### 0x03: Output Register (read-only)
+The contents of this register will change depending on the status of the device configured, as well as the type of command sent.
+Refer to the below table for a list of statuses.
 
 value|status
 ---|---
 `0x0`|Operation completed successfully
 `0x1`|Operation in progress
 `0x2`|Error Occurred
+`0x3`|Device is on
+`0x4`|Device is off
 # 0x70: Drive Controller (to be implemented)
 This peripheral is powered off upon machine start, and needs to be powered on via the System Power Controller.
 (placeholder)
@@ -82,7 +100,7 @@ placeholder|placeholder
 Writing a one to this register resumes the RTC.
 Writing a zero to this register pauses the RTC.
 
-# 0xFF: Debug Port
+# 0xFE: Debug Port
 ### 0xFF: Debug Serial Port
 The lowest 8 bits of a write to this register are output as a byte on the "serial" output. (stdout)
 This peripheral is powered off upon machine start, and needs to be powered on via the System Power Controller.
