@@ -26,14 +26,16 @@ value|command
 `01`|Power on device
 `10`|Power off device
 `11`|Reserved
-### [5:0]: Device ID
+### [5:3]: Device ID
 value|id
 ---|---
 `0`|Drive Controller
 `1`|Input Controller
 `2`|Graphics Controller
 `3`|Serial Port
-everything else|Reserved
+`everything else`|Reserved
+### [2:0]: Reserved
+(note: maybe use for device-specific functions?)
 #### 0x03: Output Register (read-only)
 The contents of this register will change depending on the status of the device configured, as well as the type of command sent.
 Refer to the below table for a list of statuses.
