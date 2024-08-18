@@ -18,12 +18,12 @@ bits|function
 
 (table assumes bit 0 is the LSB)
 ### operand types
-value|type|size (bits in operand word)|description
+value|type|size (bit-width of value in instruction)|description
 ---|---|---|---
-`00`|register|8 bits|the register whose contents will be operated on
-`01`|reg. ptr.|8 bits|identifier for register whose contents point to a memory address containing the operand
-`10`|rjmp immed.|16 bits|immediate signed relative address (only used in relative branch/jump instructions)
-`11`|immed.|size depends on operation|immediate value
+`00`|register|8 bits|the register whose (32-bit) contents will be operated on
+`01`|reg. ptr.|8 bits|identifier for register whose contents point to a (32-bit) memory address containing the (32-bit) operand
+`10`|rjmp immed.|16 bits|immediate signed (16-bit) relative address (only used in relative branch/jump instructions)
+`11`|immed.|size depends on operation|immediate (8/16-bit) value
 
 ### condition types
 (not done yet)
@@ -42,7 +42,7 @@ register|details
 `%itp`|interrupt vector table pointer
 `%scr`|system control register
 
-# %r0 - %r31
+# %r0 - %r63
 `%r1` to `%r63` are all general-purpose 32-bit registers. Some operations may store results in these registers.
 `%r0` is a constant register that ignores all writes, and only reads zero.
 
@@ -95,7 +95,8 @@ If code is executed that attempts to access privileged resources while in User m
 ### 0x5: reserved
 Reserved exception vector.
 ### 0x6: alignment fault
-When the CPU attempts to load an instruction not aligned to 4 bytes, an Alignment Fault occurs. It's usually indicative of some weird memory errors.
+When the CPU attempts to access memory that's not properly aligned to the width of the data, an Alignment Fault occurs.
+
 ### 0x7: invalid opcode
 An Invalid Opcode exception occurs when the CPU attempts to execute an instruction that doesn't exist. Additionally, if invalid control values are set, or invalid operands are included, those would also constitute an Invalid Opcode exception.
 
@@ -133,3 +134,14 @@ The last thing that the system firmware does is scan for any attached hard drive
 A drive is considered bootable if its first sector (referred to as sector zero) begins with `0xEEEE`. The rest of the drive may be used for any purpose.
 ### from the bootloader onwards
 Continuing on, the bootloader is now in control of execution. It will load the rest of the operating system from disk, and execution will proceed from there, with the system fully booted.
+
+
+# fun features of the doubleword architecture
+### conditional instructions
+Similar to the ARM architecture, nearly all instructions are conditional. This makes conditional things easy.
+### %r0: the zero register
+Similar to many RISC architectures, the zeroth register is a zero constant that ignores writes and always returns zero. This makes certain instruction encodings much simpler.
+### differentiation between supervisor and user privilege
+This feature is found in many modern processors and allows for development of complex operating systems.
+### paging (not a feature)
+Programming advanced software and operating systems for this processor would be much easier with paging and memory protection. However, that's not a thing - since I still don't know enough about it at the moment, and I figured "keep it simple" was a good excuse.
