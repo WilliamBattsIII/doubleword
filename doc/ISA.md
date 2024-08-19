@@ -23,19 +23,28 @@ If a number begins with `0x` or ends with `h`, it is to be treated as a hexadeci
 
 ### 0x00: nop
 Opcode: `000000`
+
 Instruction-specific bitfield use?: No
+
 Function: Does nothing
+
 Modifies flags?: No
 ### 0x01: add
 Opcode: `000001`
+
 Instruction-specific bitfield use?: No
+
 Function: Adds values from two registers and stores it in the `src` operand register
-Modifies flags?: Only with `s` suffix
+
+Modifies flags?: Only with `.s` suffix
 ### 0x02: addi
 Opcode: `000002`
+
 Instruction-specific bitfield use?: No
+
 Function: Adds two values (one register, one immediate), and stores it in the register operand
-Modifies flags?: Only with `s` suffix
+
+Modifies flags?: Only with `.s` suffix
 ### 0x03:
 ### 0x04
 ### 0x05
