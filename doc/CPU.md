@@ -13,22 +13,55 @@ bits|function
 `[0:5]`|opcode
 `[6:7]`|source operand type
 `[8:9]`|target operand type
-`[10:13]`|reserved (must be zeroed out)
-`[14:15]`|condition code
+`[10:12]`|reserved (must be zeroed out)
+`[13:15]`|condition code
 
 (table assumes bit 0 is the LSB)
 ### operand types
 value|type|size (bit-width of value in instruction)|description
 ---|---|---|---
 `00`|register|8 bits|the register whose (32-bit) contents will be operated on
-`01`|reg. ptr.|8 bits|identifier for register whose contents point to a (32-bit) memory address containing the (32-bit) operand
-`10`|rjmp immed.|16 bits|immediate signed (16-bit) relative address (only used in relative branch/jump instructions)
+`01`|reg. ptr.|8 bits|identifier for register whose contents point to a (32-bit) memory location that holds the (32-bit) operand
+`10`|immed. ptr|size depends on operation|immediate (8/16-bit) relative address that points to the memory location holding the (32-bit) operand
 `11`|immed.|size depends on operation|immediate (8/16-bit) value
 
 ### condition types
 (not done yet)
 # instruction set
-(in progress)
+privileged:
+BREAK
+HLT
+IN
+OUT
+IRET
+IFS (interrupt flag set)
+IFC (interrupt flag clear)
+INT
+SPL (Set Privilege Level)
+======
+MUL/IMUL
+DIV/IDIV
+REM/IREM
+
+CMP/ICMP
+======
+CALL/RET
+PUSH/POP
+======
+LDB/STB (load/store byte)
+LBW/STW (load/store word)
+LDD/STD (load/store dword)
+======
+BTS (bit set)
+BTC (bit clear)
+BTT (bit test if set)
+======
+SLA/SRA (shift left, shift right arithmetic)
+SRL (shift right logical)
+======
+INT/DEC
+======
+NOP
 
 # registers
 register|details

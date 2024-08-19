@@ -103,6 +103,7 @@ Writing a one to this register resumes the RTC.
 Writing a zero to this register pauses the RTC.
 
 # 0xFE: Debug Port
+### 0xFE: reserved
 ### 0xFF: Debug Serial Port
 The lowest 8 bits of a write to this register are output as a byte on the "serial" output. (stdout)
 This peripheral is powered off upon machine start, and needs to be powered on via the System Power Controller.

@@ -1,2 +1,2 @@
 # doubleword emulator
-it's written in C
+This program is designed to fully emulate a computer with standard peripherals, as according to the `doubleword` spec. Due to the way memory is emulated, this program is likely incompatible with big-endian systems, and will not function properly if you have a PowerPC for whatever reason.
