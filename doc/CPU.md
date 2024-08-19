@@ -13,8 +13,8 @@ bits|function
 `[0:5]`|opcode
 `[6:7]`|source operand type
 `[8:9]`|target operand type
-`[10:12]`|reserved (must be zeroed out)
-`[13:15]`|condition code
+`[10:11]`|reserved for instruction-specific info
+`[12:15]`|condition code
 
 (table assumes bit 0 is the LSB)
 ### operand types

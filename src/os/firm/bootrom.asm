@@ -1,3 +1,4 @@
+.org 0x1000
 ifc ;disable interrupts
 
 out 00h, 40h ;01000000 enable disk controller
@@ -5,11 +6,13 @@ out 00h, 58h ;01011000 enable debug serial
 
 ;debug_serial_print
 ;arguments: %r17 (pointer to ASCIIZ string)
-;(clobbers %r17)
 debug_serial_print:
-    outb ffh, %r17
-    ; note to self: this code is wrong, need to find what %r17 points to
-    cmp %r17, 00h 
-    ifz jmp debug_serial_error
-    dec %r17 ;(little endian)
-    ret
+    .loop:
+        ldb %r18, [%r17] ;load byte from string ptr
+        cmp %r18, 00h ;was that byte null?
+        ife jmp .done ;if so, don't print it
+        out ffh, %r18 ;print byte
+        dec %r17, 1  ;set ptr to next byte
+        jmp .loop
+    .done:
+        ret
