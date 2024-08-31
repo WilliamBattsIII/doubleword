@@ -1,8 +1,10 @@
 .org 0x1000
-ifc ;disable interrupts
+ite ;disable interrupts
 
 out 00h, 40h ;01000000 enable disk controller
 out 00h, 58h ;01011000 enable debug serial
+
+jmp begin_boot_process
 
 ;debug_serial_print
 ;arguments: %r17 (pointer to ASCIIZ string)
@@ -16,3 +18,6 @@ debug_serial_print:
         jmp .loop
     .done:
         ret
+scan_disks:
+
+begin_boot_process:

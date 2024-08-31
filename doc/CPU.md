@@ -34,8 +34,8 @@ HLT
 IN
 OUT
 IRET
-IFS (interrupt flag set)
-IFC (interrupt flag clear)
+ITE
+ITD
 INT
 SPL (Set Privilege Level)
 ======

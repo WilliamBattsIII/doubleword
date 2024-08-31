@@ -34,17 +34,11 @@ Opcode: `000001`
 
 Instruction-specific bitfield use?: No
 
-Function: Adds values from two registers and stores it in the `src` operand register
+Function: Adds values from two registers and stores it in the `src` operand register if two registers are provided as operands. Otherwise, if one register and one immediate value is provided, the result will be stored in the register provided.
 
 Modifies flags?: Only with `.s` suffix
 ### 0x02: addi
-Opcode: `000002`
 
-Instruction-specific bitfield use?: No
-
-Function: Adds two values (one register, one immediate), and stores it in the register operand
-
-Modifies flags?: Only with `.s` suffix
 ### 0x03:
 ### 0x04
 ### 0x05
