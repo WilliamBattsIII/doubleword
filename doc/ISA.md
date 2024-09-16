@@ -75,7 +75,7 @@ Modifies flags?: Only with `.s` suffix
 ### 0x1B: itd (disable interrupt bit)
 ### 0x1C: spl (set CPU privilege level)
 ### 0x1D: litp (load %itp)
-### 0x1E: lmtp (load %mtp, configure )
+### 0x1E: lmtp (load %mtp, configure MAT)
 ### 0x1F: debug (debug instruction)
 ### 0x20: push (push to stack)
 ### 0x21: pop (pop from stack)
