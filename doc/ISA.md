@@ -3,16 +3,23 @@
 ## Assembly info:
 ### ordering
 Examples:
+
 `add %r1, %r2`
+
 `ldw %r1, [%r2]`
+
 `push program_label`
+
 `jmp program_label`
+
 `jmp [%r17]`
+
+
 In `doubleword` assembly, the opcode goes first, and is followed by operands. The target operand comes before the source operand, and may be followed by certain values, such as with immediates, or modifiers.
 ### jumping to addresses
-Despite the inability to jump
-### indicators
-There are various indicators within the `doubleword` assembly language, mainly used to make writing an assembler easier.
+Despite the inability to jump via immediate arguments, any jump instruction can jump to any memory address, as
+### assembler conventions
+There are various indicators and conventions within the `doubleword` assembly language, mainly used to make writing the assembler easier.
 
 Brackets around a label or register signify that the value is a pointer.
 For example, say `%r2` is a register containing a memory address, and the memory at that address contains the character `A`. If you wanted to load `%r1` with the contents of the memory address in `%r2,` you could dereference the pointer with `ldb %r1, [%r2]`.
