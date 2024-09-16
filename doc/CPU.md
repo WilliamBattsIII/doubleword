@@ -23,7 +23,7 @@ value|type|size (bit-width of value in instruction)|description
 `00`|reserved|n/a|n/a
 `01`|register|8 bits|the register whose (32-bit) contents will be operated on
 `10`|reserved|n/a|n/a
-`11`|immed. jmp ptr|16 bits|16 bit immed. value, only used in relative branch/jump instructions
+`11`|immed. jmp ptr|16 bits|16 bit immed. value, only used in relative jump instructions
 
 ### condition types
 (not done yet)

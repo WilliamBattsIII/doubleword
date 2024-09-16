@@ -15,9 +15,11 @@ Examples:
 `jmp [%r17]`
 
 
-In `doubleword` assembly, the opcode goes first, and is followed by operands. The target operand comes before the source operand, and may be followed by certain values, such as with immediates, or modifiers.
+In `doubleword` assembly, the opcode mnemonic comes first in the instruction, and is followed by operands.
+The target operand comes before the source operand, and may be followed by certain values, such as with immediates, or modifiers.
+The target operand is usually the location where the result of the instruction will be stored. This differs if the target operand is not a register, or if alternate behavior is specified.
 ### jumping to addresses
-Despite the inability to jump via immediate arguments, any jump instruction can jump to any memory address, as
+Despite the inability to jump via immediate arguments, any jump instruction can jump to any memory address, as long as the correct CPU privilege is set.
 ### assembler conventions
 There are various indicators and conventions within the `doubleword` assembly language, mainly used to make writing the assembler easier.
 
@@ -66,17 +68,30 @@ Modifies flags?: Only with `.s` suffix
 ### 0x14: stb (store byte)
 ### 0x15: stw (store word)
 ### 0x16: std (store dword)
-### 0x17: call (call subroutine)
+### 0x17: hlt (halt CPU)
 ### 0x18: ret (return from subroutine)
 ### 0x19: iret (return from interrupt)
 ### 0x1A: ite (enable interrupt bit)
 ### 0x1B: itd (disable interrupt bit)
 ### 0x1C: spl (set CPU privilege level)
 ### 0x1D: litp (load %itp)
-### 0x1E: lmtp (load %mtp)
+### 0x1E: lmtp (load %mtp, configure )
 ### 0x1F: debug (debug instruction)
 ### 0x20: push (push to stack)
 ### 0x21: pop (pop from stack)
 ### 0x22: in (get dword from i/o port)
 ### 0x23: out (send dword to i/o port)
-### 0x24: hlt (halt CPU)
+### 0x24: ror (bitwise rotate right)
+### 0x25: rol (bitwise rotate left)
+### 0x26: and (bitwise AND)
+### 0x27: not (bitwise NOT)
+### 0x28: or (bitwise OR)
+### 0x29: xor (bitwise XOR)
+### 0x2A: sub (subtract)
+### 0x2B: isub (signed subtract)
+### 0x2C: jmp (jump)
+### 0x2D: rjmp (relative jump)
+### 0x2E: rlac (calculate absolute address from relative address)
+### 0x2F: call (call subroutine)
+### 0x30: rcall (relative call)
+### 0x31: rsvd (Reserved instruction)
