@@ -20,48 +20,15 @@ bits|function
 ### operand types
 value|type|size (bit-width of value in instruction)|description
 ---|---|---|---
-`00`|register|8 bits|the register whose (32-bit) contents will be operated on
-`01`|reg. ptr.|8 bits|identifier for register whose contents point to a (32-bit) memory location that holds the (32-bit) operand
-`10`|immed. ptr|size depends on operation|immediate (8/16-bit) relative address that points to the memory location holding the (32-bit) operand
-`11`|immed.|size depends on operation|immediate (8/16-bit) value
+`00`|reserved|n/a|n/a
+`01`|register|8 bits|the register whose (32-bit) contents will be operated on
+`10`|reserved|n/a|n/a
+`11`|immed. jmp ptr|16 bits|16 bit immed. value, only used in relative branch/jump instructions
 
 ### condition types
 (not done yet)
 # instruction set
-privileged:
-BREAK
-HLT
-IN
-OUT
-IRET
-ITE
-ITD
-INT
-SPL (Set Privilege Level)
-======
-MUL/IMUL
-DIV/IDIV
-REM/IREM
-
-CMP/ICMP
-======
-CALL/RET
-PUSH/POP
-======
-LDB/STB (load/store byte)
-LBW/STW (load/store word)
-LDD/STD (load/store dword)
-======
-BTS (bit set)
-BTC (bit clear)
-BTT (bit test if set)
-======
-SLA/SRA (shift left, shift right arithmetic)
-SRL (shift right logical)
-======
-INT/DEC
-======
-NOP
+See `ISA.md` for a detailed instruction set.
 
 # registers
 register|details
@@ -73,6 +40,7 @@ register|details
 `%sp`|stack pointer
 `%ip`|instruction pointer
 `%itp`|interrupt vector table pointer
+`%mtp`|memory access table pointer
 `%scr`|system control register
 
 # %r0 - %r63
@@ -93,10 +61,15 @@ As doubleword uses 32-bit fixed-length instructions, `%ip` is incremented by 4 a
 Modifying this register requires the CPU to be in Supervisor mode. Attempting to modify this register while in User mode results in a Privilege Exception.
 The IVT is a section of memory containing pointers to different interrupt handlers.
 
+# %mtp
+`%mtp` stores a pointer to the beginning of the MAT. (Memory Access Table)
+Modifying this register requires the CPU to be in Supervisor mode. Attempting to modify this register while in User mode results in a Privilege Exception.
+The MAT is a bitmap which enables/disables memory protection for certain regions of memory.
+
 # %scr
 `%scr` is the System Control Register, and contains information relevant to the state of the CPU. `%scr` is a privileged register, meaning that attempting to read or write to it while in User mode will result in a Privilege Exception.
 Some instructions may depend on the contents of this register (ex: determining if a privileged instruction can run, or conditional instructions utilizing CPU flags)
-
+(bits in order: ALU flags, CPU privilege level, MAT granularity, interrupt enable flag, memory protection enable flag, debug flag)
 
 
 
@@ -120,11 +93,11 @@ The Divide By Zero exception occurs when a `DIV` or `IDIV` instruction is encoun
 ### 0x1: machine error
 The Machine Error exception occurs when some sort of hardware error occurs. (for example, your hard drive randomly exploding, or perhaps you turn the monitor on and off 20 times a second)
 ### 0x2: breakpoint
-A Breakpoint exception occurs when the `BREAK` instruction is executed. Upon a breakpoint, the CPU dumps its registers and debug information over the debug serial port. (note to self: add other things?)
+A Breakpoint exception occurs when the `DEBUG` instruction is executed. Upon a breakpoint, the CPU dumps its registers and debug information over the debug serial port. (note to self: add other things?) (second note to self: what the hell is a breakpoint)
 ### 0x3: handler fault
 A Handler Fault occurs if an exception occurs while attempting to handle another exception - or if an exception goes unhandled. In the event that this exception is unhandled (or an exception occurs within it), the machine will attempt to 
 ### 0x4: privilege fault
-If code is executed that attempts to access privileged resources while in User mode, a Privilege Fault will occur. Examples of privileged resources include system control registers like `%scr` or `%itp`, or privileged instructions such as `HLT`, `IN` or `OUT`, or `IRET`.
+If code is executed that attempts to access privileged resources while in User mode, a Privilege Fault will occur. Privileged resources include control registers, memory marked as protected in the MAT, or privileged instructions.
 ### 0x5: reserved
 Reserved exception vector.
 ### 0x6: alignment fault
@@ -155,6 +128,12 @@ The IVT is a collection of 256 pointers to interrupt handlers. (basically just a
 Each handler pointer is 32 bits wide, so the IVT is 1024 bytes long. 
 The IVT can reside anywhere in memory that aligns to four-byte boundaries.
 Each pointer is aligned to 4-byte boundaries, so there's a new pointer every 4 bytes.
+
+# memory protection, and the Memory Access Table (MAT)
+
+The MAT is a designated region of memory containing a bitmap of 
+
+
 # boot process
 ### system setup
 By default, the `doubleword` emulator is set up with 32 MB of RAM. As listed in `IO.md`, peripherals are disabled via the power controller and must be initialized before use.
@@ -177,4 +156,4 @@ Similar to many RISC architectures, the zeroth register is a zero constant that 
 ### differentiation between supervisor and user privilege
 This feature is found in many modern processors and allows for development of complex operating systems.
 ### paging (not a feature)
-Programming advanced software and operating systems for this processor would be much easier with paging and memory protection. However, that's not a thing - since I still don't know enough about it at the moment, and I figured "keep it simple" was a good excuse.
+Programming advanced software and operating systems for this processor would be much easier with paging and virtual memory. However, that's not a thing - since I still don't know enough about it at the moment, and I figured "keep it simple" was a good excuse. However, in the interest of practicality, a rudimentary form of memory protection has been implemented with the Memory Access Table - a designated bitmap of the privilege levels required to access specific blocks of memory.

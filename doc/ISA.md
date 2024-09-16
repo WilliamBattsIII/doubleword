@@ -21,7 +21,7 @@ A percent character before an operand indicates that it's a register. As an exam
 
 If a number begins with `0x` or ends with `h`, it is to be treated as a hexadecimal number. If a number begins with `b`, it is to be treated as a binary number.
 
-### 0x00: nop
+### 0x00: nop (no operation)
 Opcode: `000000`
 
 Instruction-specific bitfield use?: No
@@ -29,7 +29,7 @@ Instruction-specific bitfield use?: No
 Function: Does nothing
 
 Modifies flags?: No
-### 0x01: add
+### 0x01: add (addition)
 Opcode: `000001`
 
 Instruction-specific bitfield use?: No
@@ -37,19 +37,39 @@ Instruction-specific bitfield use?: No
 Function: Adds values from two registers and stores it in the `src` operand register if two registers are provided as operands. Otherwise, if one register and one immediate value is provided, the result will be stored in the register provided.
 
 Modifies flags?: Only with `.s` suffix
-### 0x02: addi
+### 0x02: addi (signed addition)
 
-### 0x03:
-### 0x04
-### 0x05
-### 0x06
-### 0x07
-### 0x08
-### 0x09
-### 0x0A
-### 0x0B
-### 0x0C
-### 0x0D
-### 0x0E
-### 0x0F
-### 0x10
+### 0x03: mul (multiply)
+### 0x04: imul (signed multiply)
+### 0x05: div (division)
+### 0x06: idiv (signed division)
+### 0x07: cmp (compare)
+### 0x08: icmp (signed compare)
+### 0x09: bts (bit set)
+### 0x0A: btc (bit clear)
+### 0x0B: btt (test if bit set)
+### 0x0C: sla (bitshift left)
+### 0x0D: sra (shift right aritmetic)
+### 0x0E: srl (shift right logical)
+### 0x0F: inc (increment)
+### 0x10: dec (decrement)
+### 0x11: ldb (load byte)
+### 0x12: lbw (load word)
+### 0x13: ldd (load dword)
+### 0x14: stb (store byte)
+### 0x15: stw (store word)
+### 0x16: std (store dword)
+### 0x17: call (call subroutine)
+### 0x18: ret (return from subroutine)
+### 0x19: iret (return from interrupt)
+### 0x1A: ite (enable interrupt bit)
+### 0x1B: itd (disable interrupt bit)
+### 0x1C: spl (set CPU privilege level)
+### 0x1D: litp (load %itp)
+### 0x1E: lmtp (load %mtp)
+### 0x1F: debug (debug instruction)
+### 0x20: push (push to stack)
+### 0x21: pop (pop from stack)
+### 0x22: in (get dword from i/o port)
+### 0x23: out (send dword to i/o port)
+### 0x24: hlt (halt CPU)
