@@ -156,7 +156,7 @@ Modifies flags?: Yes
 ### 0x15: stw (store word)
 ### 0x16: std (store dword)
 ### 0x17: hlt (halt CPU)
-Opcode: `010111`
+Opcode: `010111` (PRIVILEGED INSTRUCTION)
 
 Instruction-specific bitfield use?: No
 
@@ -165,11 +165,51 @@ Function: Adds values from two registers and stores it in the `src` operand regi
 Modifies flags?: No
 ### 0x18: ret (return from subroutine)
 ### 0x19: iret (return from interrupt)
+Opcode: `000000` (PRIVILEGED INSTRUCTION)
 ### 0x1A: ite (enable interrupt bit)
+Opcode: `011010` (PRIVILEGED INSTRUCTION)
+
+Instruction-specific bitfield use?: No
+
+Function: Enables CPU interrupts by setting the Interrupt Enable flag bit in `%scr`.
+
+Modifies flags?: No
 ### 0x1B: itd (disable interrupt bit)
+Opcode: `011011` (PRIVILEGED INSTRUCTION)
+
+Instruction-specific bitfield use?: No
+
+Function: Disables CPU interrupts by clearing the Interrupt Enable flag bit in `%scr`.
+
+Modifies flags?: No
 ### 0x1C: spl (set CPU privilege level)
+Opcode: `011100` (PRIVILEGED INSTRUCTION)
+
+Instruction-specific bitfield use?: No
+
+Function: Sets the CPU privilege level. If `src` contains a value other than zero, the CPU privilege level will be set to User.
 ### 0x1D: litp (load %itp)
+Opcode: `011101` (PRIVILEGED INSTRUCTION)
+
+Instruction-specific bitfield use?: No
+
+Function: Sets `%itp` to the value stored in the `src` operand.
+
+Modifies flags?: No
 ### 0x1E: lmtp (load %mtp, configure MAT)
+Opcode: `011110` (PRIVILEGED INSTRUCTION)
+
+Instruction-specific bitfield use?: Yes
+bits|value
+---|---
+`00`|MAT disabled
+`01`|000K/bit granularity
+`10`|
+`11`|
+Function:
+
+Modifies Flags?:
+
 ### 0x1F: debug (debug instruction)
 ### 0x20: push (push to stack)
 ### 0x21: pop (pop from stack)
@@ -187,5 +227,24 @@ Modifies flags?: No
 ### 0x2D: rjmp (relative jump)
 ### 0x2E: rlac (calculate absolute address from relative address)
 ### 0x2F: call (call subroutine)
+Opcode: `101111`
+
+Instruction-specific bitfield use?: No
+
+Function: Calls a subroutine, with the address stored in the `src` operand. The value of `%pc + 4` (i.e., the instruction directly after) is pushed on the stack.
 ### 0x30: rcall (relative call)
+Opcode: `110000`
+
+Instruction-specific bitfield use?: No
+
+Function: Calls a subroutine located at a (signed) relative address stored in the `src` operand. The return address (`%pc + 4`) is pushed on the stack.
+
+Modifies flags?: No
 ### 0x31: rsvd (Reserved instruction)
+Opcode: `110001`
+
+Instruction-specific bitfield use?: n/a
+
+Function: Not yet defined - this instruction does not have any specific function and will cause an error if executed.
+
+Modifies flags?: n/a
