@@ -16,7 +16,9 @@ Examples:
 
 
 In `doubleword` assembly, the opcode mnemonic comes first in the instruction, and is followed by operands.
+
 The target operand comes before the source operand, and may be followed by certain values, such as with immediates, or modifiers.
+
 The target operand is usually the location where the result of the instruction will be stored. This differs if the target operand is not a register, or if alternate behavior is specified.
 ### jumping to addresses
 Despite the inability to jump via immediate arguments, any jump instruction can jump to any memory address, as long as the correct CPU privilege is set.
@@ -30,33 +32,118 @@ A percent character before an operand indicates that it's a register. As an exam
 
 If a number begins with `0x` or ends with `h`, it is to be treated as a hexadecimal number. If a number begins with `b`, it is to be treated as a binary number.
 
+Suffixes to an instruction are denoted with a `-` immediately after the opcode mnemonic, followed by the suffix itself.
+
 ### 0x00: nop (no operation)
 Opcode: `000000`
 
 Instruction-specific bitfield use?: No
 
-Function: Does nothing
+Function: Does exactly nothing
 
 Modifies flags?: No
 ### 0x01: add (addition)
 Opcode: `000001`
 
-Instruction-specific bitfield use?: No
+Instruction-specific bitfield use?: Yes, for instruction suffixes
 
 Function: Adds values from two registers and stores it in the `src` operand register if two registers are provided as operands. Otherwise, if one register and one immediate value is provided, the result will be stored in the register provided.
 
-Modifies flags?: Only with `.s` suffix
-### 0x02: addi (signed addition)
+Modifies flags?: Only with `-s` suffix
 
+The `-s` suffix is specified as `01` in the instruction-specific portion of the control word.
+### 0x02: addi (signed addition)
+Opcode: `000010`
+
+Instruction-specific bitfield use?: Yes, for instruction suffixes
+
+Function: Adds two signed values from two registers and stores it in the `src` operand register if two registers are provided as operands. Otherwise, if one register and one immediate value is provided, the result will be stored in the register provided.
+
+Modifies flags?: Only with `-s` suffix
+
+The `-s` suffix is specified as `01` in the instruction-specific portion of the control word.
 ### 0x03: mul (multiply)
+Opcode: `000011`
+
+Instruction-specific bitfield use?: Yes, for instruction suffixes
+
+Function: Multiplies values from two registers and stores it in the `src` operand register if two registers are provided as operands. Otherwise, if one register and one immediate value is provided, the result will be stored in the register provided.
+
+Modifies flags?: Only with `-s` suffix
+
+The `-s` suffix is specified as `01` in the instruction-specific portion of the control word.
 ### 0x04: imul (signed multiply)
+Opcode: `000100`
+
+Instruction-specific bitfield use?: Yes, for instruction suffixes
+
+Function: Multiplies signed values from two registers and stores it in the `src` operand register if two registers are provided as operands. Otherwise, if one register and one immediate value is provided, the result will be stored in the register provided.
+
+Modifies flags?: Only with `-s` suffix
+
+The `-s` suffix is specified as `01` in the instruction-specific portion of the control word.
 ### 0x05: div (division)
+Opcode: `000101`
+
+Instruction-specific bitfield use?: Yes, for instruction suffixes
+
+Function: Divides the `src` operand by the `tgt` operand, and stores it in the `src` operand register (if two registers are provided as operands). If one register and one immediate is provided, the result will be stored in the register.
+
+Modifies flags?: Only with `-s` suffix
+
+The `-s` suffix is specified as `01` in the instruction-specific portion of the control word.
 ### 0x06: idiv (signed division)
+Opcode: `000110`
+
+Instruction-specific bitfield use?: Yes, for instruction suffixes
+
+Function: Divides (signed) the `src` operand by the `tgt` operand, and stores it in the `src` operand register (if two registers are provided as operands). If one register and one immediate is provided, the result will be stored in the register.
+
+Modifies flags?: Only with `-s` suffix
+
+The `-s` suffix is specified as `01` in the instruction-specific portion of the control word.
 ### 0x07: cmp (compare)
+Opcode: `000111`
+
+Instruction-specific bitfield use?: No
+
+Function: Compares the operands provided. If they are the same, the zero flag bit will be set in `%scr`.
+If the `tgt` operand is higher than the `src` operand, the carry flag bit will be set in `%scr`. Otherwise, the carry flag bit will not be set.
+
+Modifies flags?: Always
 ### 0x08: icmp (signed compare)
+Opcode: `001000`
+
+Instruction-specific bitfield use?: No
+
+Function: Compares the operands provided. If they are the same (signed value), the zero flag bit will be set in `%scr`.
+If the `tgt` operand is higher than the `src` operand, the carry flag bit will be set in `%scr`. Otherwise, the carry flag bit will not be set.
+
+Modifies flags?: Always
 ### 0x09: bts (bit set)
+Opcode: `001001`
+
+Instruction-specific bitfield use?: No
+
+Function: Sets a bit in the `tgt` operand. (must be a register) The value stored in the `src` operand will be used as the bit to set.
+
+Modifies flags?: No
 ### 0x0A: btc (bit clear)
+Opcode: `001010`
+
+Instruction-specific bitfield use?: No
+
+Function: Clears a bit in the `tgt` operand. (must be a register) The value stored in the `src` operand will be used as the bit to clear.
+
+Modifies flags?: No
 ### 0x0B: btt (test if bit set)
+Opcode: `001011`
+
+Instruction-specific bitfield use: No
+
+Function: Tests a bit in the `tgt` operand, which must be a register. The value stored in `src` is used as the bit to clear. If the bit tested is, in fact, set, then the zero flag bit in `%scr` will be set. Otherwise, it will be cleared.
+
+Modifies flags?: Yes
 ### 0x0C: sla (bitshift left)
 ### 0x0D: sra (shift right aritmetic)
 ### 0x0E: srl (shift right logical)
@@ -69,6 +156,13 @@ Modifies flags?: Only with `.s` suffix
 ### 0x15: stw (store word)
 ### 0x16: std (store dword)
 ### 0x17: hlt (halt CPU)
+Opcode: `010111`
+
+Instruction-specific bitfield use?: No
+
+Function: Adds values from two registers and stores it in the `src` operand register if two registers are provided as operands. Otherwise, if one register and one immediate value is provided, the result will be stored in the register provided.
+
+Modifies flags?: No
 ### 0x18: ret (return from subroutine)
 ### 0x19: iret (return from interrupt)
 ### 0x1A: ite (enable interrupt bit)

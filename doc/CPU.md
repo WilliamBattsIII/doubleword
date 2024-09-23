@@ -70,6 +70,7 @@ The MAT is a bitmap which enables/disables memory protection for certain regions
 `%scr` is the System Control Register, and contains information relevant to the state of the CPU. `%scr` is a privileged register, meaning that attempting to read or write to it while in User mode will result in a Privilege Exception.
 Some instructions may depend on the contents of this register (ex: determining if a privileged instruction can run, or conditional instructions utilizing CPU flags)
 (bits in order: ALU flags, CPU privilege level, MAT granularity, interrupt enable flag, memory protection enable flag, debug flag)
+(ALU flags: zero, parity, carry, overflow, sign)
 
 
 
