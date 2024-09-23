@@ -20,8 +20,6 @@ In `doubleword` assembly, the opcode mnemonic comes first in the instruction, an
 The target operand comes before the source operand, and may be followed by certain values, such as with immediates, or modifiers.
 
 The target operand is usually the location where the result of the instruction will be stored. This differs if the target operand is not a register, or if alternate behavior is specified.
-### jumping to addresses
-Despite the inability to jump via immediate arguments, any jump instruction can jump to any memory address, as long as the correct CPU privilege is set.
 ### assembler conventions
 There are various indicators and conventions within the `doubleword` assembly language, mainly used to make writing the assembler easier.
 
