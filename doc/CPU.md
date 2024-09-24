@@ -20,8 +20,8 @@ bits|function
 ### operand types
 value|type|size (bit-width of value in instruction)|description
 ---|---|---|---
-`00`|reserved|n/a|n/a
-`01`|register|8 bits|the register whose (32-bit) contents will be operated on
+`00`|reg. ptr.|8 bits|register containing a 32-bit memory address (used in mov, store, etc)
+`01`|register|8 bits|the register whose contents will be operated on
 `10`|reserved|n/a|n/a
 `11`|immed. jmp ptr|16 bits|16 bit immed. value, only used in relative jump instructions
 
@@ -123,6 +123,14 @@ timer (PIT)|`0xFF`
 
 As the `doublebox` architecture lacks a sophisticated interrupt controller chip, specific interrupts are unable to be masked - interrupts can only be disabled or enabled. (this only applies to hardware/software interrupts - exceptions still work)
 Instead, programs running on the computer must use the I/O bus to enable or disable specific devices.
+
+### what happens when an interrupt happens?
+Whether it be a software or hardware interrupt, a standard process occurs every time an interrupt is risen in the processor.
+
+The current instruction executing is allowed to finish. After that, the `%scr` register is pushed onto the stack. (4 bytes)
+Then, the return address (immediately after the last instruction, 4 bytes) is pushed to the stack.
+These two values will be restored onto the stack when an `iret` is executed. No other registers should be altered. If they are, it is the responsibility of the interrupt handler to restore them before returning.
+
 
 ## the Interrupt Vector Table (IVT)
 The IVT is a collection of 256 pointers to interrupt handlers. (basically just a jump table that uses the interrupt vector as an index)
