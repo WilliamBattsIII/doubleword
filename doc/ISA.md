@@ -200,16 +200,19 @@ Modifies flags?: No
 Opcode: `011110` (PRIVILEGED INSTRUCTION)
 
 Instruction-specific bitfield use?: Yes
-bits|value
+bits|granularity|bitmap size
 ---|---
-`00`|MAT disabled
-`01`|000K/bit granularity
-`10`|
-`11`|
-Function:
+`00`|MAT disabled|MAT disabled
+`01`|4KB/entry|1MB bitmap
+`10`|16KB/entry|256KB bitmap
+`11`|64KB/entry|64KB bitmap
 
-Modifies Flags?:
+Function: Configures/enables/disables the Memory Access Table (MAT). The MAT controls the privilege needed to read from memory in different regions.
+This is configured with a bitmap, whose pointer is stored in `%mtp`. One bit in the bitmap is an entry, which determines the privilege level for a certain-sized block of memory corresponding to the bit.
+The size (e.g., granularity) of these memory blocks (and therefore, the size of the bitmap) is configured in the Instruction-Specific bitfield in the LMTP instruction's control word.
+Only one mode can be set at a single time, and the MAT granularity covers the entire address space of the computer, whether or not that much memory is actually installed.
 
+Modifies Flags?: No
 ### 0x1F: debug (debug instruction)
 ### 0x20: push (push to stack)
 ### 0x21: pop (pop from stack)
