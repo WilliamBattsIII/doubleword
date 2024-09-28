@@ -1,6 +1,13 @@
 #pragma once
 
-typedef enum {
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+
+
+enum {
     R0,
     R1,
     R2,
@@ -73,4 +80,78 @@ typedef enum {
     NUM_REGISTERS // dummy register
 };
 
-uint32_t registers [NUM_REGISTERS];
+enum {
+    NOP = 0x00,
+    ADD = 0x01,
+    ADDI = 0x02,
+    MUL = 0x03,
+    IMUL = 0x04,
+    DIV = 0x05,
+    IDIV = 0x06,
+    CMP = 0x07,
+    ICMP = 0x08,
+    BTS = 0x09,
+    BTC = 0x0A,
+    BTT = 0x0B,
+    SLA = 0x0C,
+    SRA = 0x0D,
+    SRL = 0x0E,
+    INC = 0x0F,
+    DEC = 0x10,
+    LDB = 0x11,
+    LBW = 0x12,
+    LDD = 0x13,
+    STB = 0x14,
+    STW = 0x15,
+    STD = 0x16,
+    HLT = 0x17,
+    RET = 0x18,
+    IRET = 0x19,
+    ITE = 0x1A,
+    ITD = 0x1B,
+    SPL = 0x1C,
+    LITP = 0x1D,
+    LMTP = 0x1E,
+    DEBUG = 0x1F,
+    PUSH = 0x20,
+    POP = 0x21,
+    IN = 0x22,
+    OUT = 0x23,
+    ROR = 0x24,
+    ROL = 0x25,
+    AND = 0x26,
+    NOT = 0x27,
+    OR = 0x28,
+    XOR = 0x29,
+    SUB = 0x2A,
+    ISUB = 0x2B,
+    JMP = 0x2C,
+    RJMP = 0x2D,
+    RLAC = 0x2E,
+    CALL = 0x2F,
+    RCALL = 0x30,
+    RSVD = 0x31
+};
+
+
+extern uint32_t registers[];
+extern bool running;
+
+#define MEMORY_SIZE_KB 32768 // 32 megabytes
+#define PROC_SPEED_HZ 12500000 // 12.5 MHz
+
+#define FPS 60 // frames per second
+#define TPF 1 // ticks per frame
+#define TPS (FPS * TPF) // ticks per second
+#define CPF (PROC_SPEED_HZ / TPS)
+
+
+extern uint8_t* memory;
+extern uint64_t cyclecount;
+
+void init_mem();
+void exec_instruction(uint32_t instruction);
+void emu_raise(uint8_t vector);
+uint32_t get_instruction(uint32_t memory_address);
+int calc_cycles(uint16_t ctrl_word);
+int emu_loop();

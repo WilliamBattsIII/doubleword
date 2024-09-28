@@ -92,7 +92,7 @@ Invalid Opcode|`0x7`
 ### 0x0: divide by zero
 The Divide By Zero exception occurs when a `DIV` or `IDIV` instruction is encountered that attempts to divide by zero.
 ### 0x1: machine error
-The Machine Error exception occurs when some sort of hardware error occurs. (for example, your hard drive randomly exploding, or perhaps you turn the monitor on and off 20 times a second)
+The Machine Error exception occurs when some sort of hardware error occurs. (for example, your hard drive randomly exploding, or perhaps you turn the monitor on and off 20 times a second) (lp0 on fire?)
 ### 0x2: breakpoint
 A Breakpoint exception occurs when the `DEBUG` instruction is executed. Upon a breakpoint, the CPU dumps its registers and debug information over the debug serial port. (note to self: add other things?) (second note to self: what the hell is a breakpoint)
 ### 0x3: handler fault
