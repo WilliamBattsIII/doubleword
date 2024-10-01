@@ -153,5 +153,5 @@ void init_mem();
 void exec_instruction(uint32_t instruction);
 void emu_raise(uint8_t vector);
 uint32_t get_instruction(uint32_t memory_address);
-int calc_cycles(uint16_t ctrl_word);
+int calc_cycles(uint8_t opcode);
 int emu_loop();

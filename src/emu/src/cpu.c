@@ -2,7 +2,7 @@
 
 
 uint32_t registers [NUM_REGISTERS];
-bool running = true;
+bool running;
 uint8_t* memory;
 uint64_t cyclecount = 0;
 void init_mem() {
@@ -10,10 +10,10 @@ void init_mem() {
 }
 
 int calc_cycles(uint8_t opcode) {
-    // add logic to calculate cycles for things involving specific operand types
+    // add logic to calculate cycles for things involving specific operand types?
     switch(opcode) {
         case NOP:
-            return 1; /// TODO: struct for each opcode, contains cycles to execute?
+            return 1; /// TODO: struct for each opcode, contains cycles to execute - instead of this clusterfuck?
         case ADD:
             return 1;
         case ADDI:
@@ -75,13 +75,18 @@ int calc_cycles(uint8_t opcode) {
         case LMTP:
             return 1;
         case DEBUG:
+            return 12;
         case PUSH:
+            return 2;
         case POP:
+            return 2;
         case IN:
+            return 4;
         case OUT:
+            return 4;
         // TODO: other instructions
         default:
-            return -1; // invalid instruction
+            return 0; // invalid instruction
     }
 }
 

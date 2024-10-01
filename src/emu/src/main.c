@@ -8,6 +8,7 @@
 
 int main(void) { // TODO: program arguments to change size at runtime
     printf("%d\n", CPF);
+    bool running = true;
     emu_loop();
     return 0;
 }
