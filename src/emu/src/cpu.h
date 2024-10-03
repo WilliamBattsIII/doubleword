@@ -6,6 +6,8 @@
 #include <time.h>
 #include <stdbool.h>
 
+extern char* registernames[];
+
 
 enum {
     R0,
@@ -135,6 +137,8 @@ enum {
 
 
 extern uint32_t registers[];
+
+
 extern bool running;
 
 #define MEMORY_SIZE_KB 32768 // 32 megabytes

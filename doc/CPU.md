@@ -23,9 +23,9 @@ value|type|size (bit-width of value in instruction)|description
 `00`|reg. ptr.|8 bits|register containing a 32-bit memory address (used in mov, store, etc)
 `01`|register|8 bits|the register whose contents will be operated on
 `10`|8-bit immed.|8 bits|immediate meant to hold relative addresses for load/store/IO instructions
-`11`|immed. jmp ptr|16 bits|16 bit immed. value, only used in relative jump instructions
+`11`|immed. memory ptr|16 bits|16 bit immed. value, only used in relative memory addressing
 
-### condition types
+### condition codes
 (not done yet)
 # instruction set
 See `ISA.md` for a detailed instruction set.
