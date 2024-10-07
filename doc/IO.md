@@ -61,8 +61,8 @@ The Configuration Register operates as follows:
 bits|function
 ---|---
 `[31:2]`|reserved
-`[1]`|if high, mouse enabled
-`[0]`|if high, keyboard enabled
+`[1]`|if high, mouse enabled, otherwise disabled
+`[0]`|if high, keyboard enabled, otherwise disabled
 
 (table assumes bit 0 is the LSB)
 ### 0xD1: Keyboard

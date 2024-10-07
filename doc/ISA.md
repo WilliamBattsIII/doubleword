@@ -400,10 +400,15 @@ Only one mode can be set at a single time, and the MAT granularity covers the en
 
 Modifies Flags?: No
 ### 0x1F: debug (debug instruction)
+Opcode: `011111`
 ### 0x20: push (push to stack)
+Opcode: `100000`
 ### 0x21: pop (pop from stack)
+Opcode: `100001`
 ### 0x22: in (get dword from i/o port)
+Opcode: `100010`
 ### 0x23: out (send dword to i/o port)
+Opcode: `100011`
 ### 0x24: ror (bitwise rotate right)
 ### 0x25: rol (bitwise rotate left)
 ### 0x26: and (bitwise AND)

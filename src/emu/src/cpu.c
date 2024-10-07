@@ -1,5 +1,9 @@
 #include "cpu.h"
 
+uint32_t registers [NUM_REGISTERS];
+bool running = true;
+uint8_t* memory;
+uint64_t cyclecount = 0;
 
 char* registernames[] = {
     "R0",
@@ -74,12 +78,63 @@ char* registernames[] = {
     "?????"
 };
 
-uint32_t registers [NUM_REGISTERS];
-bool running = true;
-uint8_t* memory;
-uint64_t cyclecount = 0;
+char* opcodenames[] = {
+    "NOP",
+    "ADD",
+    "ADDI",
+    "MUL",
+    "IMUL",
+    "DIV",
+    "IDIV",
+    "CMP",
+    "ICMP",
+    "BTS",
+    "BTC",
+    "BTT",
+    "SLA",
+    "SLA",
+    "SRL",
+    "INC",
+    "DEC",
+    "LDB",
+    "LDW",
+    "LDD",
+    "STB",
+    "STW",
+    "STD",
+    "HLT",
+    "RET",
+    "IRET",
+    "ITE",
+    "ITD",
+    "SPL",
+    "LITP",
+    "LMTP",
+    "DEBUG",
+    "PUSH",
+    "POP",
+    "IN",
+    "OUT",
+    "ROR",
+    "ROL",
+    "AND",
+    "NOT",
+    "OR",
+    "XOR",
+    "SUB",
+    "ISUB",
+    "JMP",
+    "RJMP",
+    "CALL",
+    "RCALL",
+    "RSVD"
+};
+
 void init_mem() {
     memory = malloc(MEMORY_SIZE_KB * 1024 * sizeof(uint8_t)); // set memory pointer
+    for(int i = 0; i < NUM_REGISTERS; i++) {
+        registers[NUM_REGISTERS] = 0; // properly zero out all registers
+    }
     // todo: put test code or something in memory as a temporary way to get around loading files
 }
 
@@ -158,16 +213,50 @@ int calc_cycles(uint8_t opcode) {
             return 4;
         case OUT:
             return 4;
-        // TODO: other instructions
+        case ROR:
+            return 1;
+        case ROL:
+            return 1;
+        case AND:
+            return 1;
+        case NOT:
+            return 1;
+        case OR:
+            return 1;
+        case XOR:
+            return 1;
+        case SUB:
+            return 1;
+        case ISUB:
+            return 1;
+        case JMP:
+            return 2;
+        case RJMP:
+            return 3;
+        case RLAC:
+            return 2;
+        case CALL:
+            return 6;
+        case RCALL:
+            return 6;
+        case RSVD:
+            return 5;
         default:
             return 0; // invalid instruction
     }
 }
-
+// MSB -> LSB || opcode, operand types, instruction-specific data, operand 1, operand 2
 void exec_instruction(uint32_t instruction) {
-    for(int i = 0; i < NUM_REGISTERS; i++) {
-        printf("%s: %d\n", registernames[i], registers[i]);
+    printf("Register dump:");
+    for(int i = 0; i < NUM_REGISTERS; i++) { // print registers
+        printf("%s: 0x%X\n", registernames[i], registers[i]);
     }
+    printf("Instruction info:\nInstruction: 0x%X\n", instruction); // print instruction
+    uint8_t opcode = extractbits(instruction, 26, 31); // opcode is at MSB
+    cyclecount += calc_cycles(opcode);
+    printf("Opcode: 0x%X (mnemonic: %s)\n", opcode, opcodenames[opcode]); // print opcode
+    // print operand types
+    // print operands
 
 }
 void emu_raise(uint8_t vector) {}
@@ -186,8 +275,8 @@ uint32_t get_instruction(uint32_t memory_address) {
 int emu_loop() {
     while(running) {
         //uint32_t instruction = get_instruction(registers[IP]);
-        cyclecount += calc_cycles(0);
-        exec_instruction(0);
+        
+        exec_instruction(0x8800CDE7);
         running = false;
     }
     return 0;

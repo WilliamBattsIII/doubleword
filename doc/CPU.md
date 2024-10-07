@@ -16,14 +16,14 @@ bits|function
 `[10:11]`|reserved for instruction-specific info
 `[12:15]`|condition code
 
-(table assumes bit 0 is the LSB)
+(table assumes bit 0 is the MSB)
 ### operand types
 value|type|size (bit-width of value in instruction)|description
 ---|---|---|---
 `00`|reg. ptr.|8 bits|register containing a 32-bit memory address (used in mov, store, etc)
 `01`|register|8 bits|the register whose contents will be operated on
 `10`|8-bit immed.|8 bits|immediate meant to hold relative addresses for load/store/IO instructions
-`11`|immed. memory ptr|16 bits|16 bit immed. value, only used in relative memory addressing
+`11`|immed. memory ptr|16 bits|16 bit immed. value, only used in relative memory addressing (and other rare scenarios)
 
 ### condition codes
 (not done yet)
@@ -69,7 +69,7 @@ The MAT is a bitmap which enables/disables memory protection for certain regions
 # %scr
 `%scr` is the System Control Register, and contains information relevant to the state of the CPU. `%scr` is a privileged register, meaning that attempting to read or write to it while in User mode will result in a Privilege Exception.
 Some instructions may depend on the contents of this register (ex: determining if a privileged instruction can run, or conditional instructions utilizing CPU flags)
-(bits in order: ALU flags, CPU privilege level, MAT granularity, interrupt enable flag, memory protection enable flag, debug flag)
+(bits in order from MSB: ALU flags, CPU privilege level, MAT granularity, interrupt enable flag, memory protection enable flag, debug flag)
 (ALU flags: zero, parity, carry, overflow, sign)
 
 
