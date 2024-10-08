@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "util.h"
 
 uint32_t registers [NUM_REGISTERS];
 bool running = true;
@@ -247,7 +248,7 @@ int calc_cycles(uint8_t opcode) {
 }
 // MSB -> LSB || opcode, operand types, instruction-specific data, operand 1, operand 2
 void exec_instruction(uint32_t instruction) {
-    printf("Register dump:");
+    printf("Register dump:\n");
     for(int i = 0; i < NUM_REGISTERS; i++) { // print registers
         printf("%s: 0x%X\n", registernames[i], registers[i]);
     }
@@ -261,13 +262,13 @@ void exec_instruction(uint32_t instruction) {
 }
 void emu_raise(uint8_t vector) {}
 
-
+// note for below: memory_address is from the emulator, and is really an index into the "real" memory pointer
 uint32_t get_instruction(uint32_t memory_address) {
     if(memory_address % 4 == 0) {
         // logic goes here
     }
     else {
-        emu_raise(0x06);// raise Alignment Fault
+        emu_raise(0x06); // raise Alignment Fault
     }
     return 0; // placeholder, remove this
 }
