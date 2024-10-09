@@ -12,7 +12,7 @@
 #define FPS 60 // frames per second
 #define TPF 1 // ticks per frame
 #define TPS (FPS * TPF) // ticks per second
-#define CPF (PROC_SPEED_HZ / TPS)
+#define CPS (PROC_SPEED_HZ / TPS)
 
 extern char* registernames[];
 extern char* optypenames[];
