@@ -131,6 +131,32 @@ char* opcodenames[] = {
     "RSVD"
 };
 
+char *optypenames [] = {
+    "REG_PTR_OR_NA",
+    "REGISTER",
+    "IMMED_B",
+    "IMMED_PTR"
+};
+
+char *condcodenames[] = {
+    "ALWAYS",
+    "PLACEHOLDER1",
+    "PLACEHOLDER2",
+    "PLACEHOLDER3",
+    "PLACEHOLDER4",
+    "PLACEHOLDER5",
+    "PLACEHOLDER6",
+    "PLACEHOLDER7",
+    "PLACEHOLDER8,"
+    "PLACEHOLDER9",
+    "PLACEHOLDER10",
+    "PLACEHOLDER11",
+    "PLACEHOLDER12",
+    "PLACEHOLDER13",
+    "PLACEHOLDER14",
+    "PLACEHOLDER15"
+};
+
 void init_mem() {
     memory = malloc(MEMORY_SIZE_KB * 1024 * sizeof(uint8_t)); // set memory pointer
     for(int i = 0; i < NUM_REGISTERS; i++) {
@@ -248,17 +274,26 @@ int calc_cycles(uint8_t opcode) {
 }
 // MSB -> LSB || opcode, operand types, instruction-specific data, operand 1, operand 2
 void exec_instruction(uint32_t instruction) {
+    int cycles = 0;
     printf("Register dump:\n");
     for(int i = 0; i < NUM_REGISTERS; i++) { // print registers
         printf("%s: 0x%X\n", registernames[i], registers[i]);
     }
     printf("Instruction info:\nInstruction: 0x%X\n", instruction); // print instruction
     uint8_t opcode = extractbits(instruction, 26, 31); // opcode is at MSB
-    cyclecount += calc_cycles(opcode);
-    printf("Opcode: 0x%X (mnemonic: %s)\n", opcode, opcodenames[opcode]); // print opcode
-    // print operand types
-    // print operands
-
+    cycles = calc_cycles(opcode);
+    cyclecount += cycles;
+    printf("Opcode: 0x%X (mnemonic: %s) (%d cycles)\n", opcode, opcodenames[opcode], cycles); // print opcode
+    uint8_t typeA = extractbits(instruction, 24, 25);
+    uint8_t typeB = extractbits(instruction, 22, 23);
+    uint8_t cond_code = extractbits(instruction, 16, 21);
+    uint8_t operandA = extractbits(instruction, 8, 15);
+    uint8_t operandB = extractbits(instruction, 0, 7);
+    printf("A operand type: %s\n", optypenames[typeA]);
+    printf("B operand type: %s\n", optypenames[typeB]);
+    printf("Condition code: %s\n", condcodenames[cond_code]);
+    printf("A operand value: 0x%X\n", operandA);
+    printf("B operand value: 0x%X\n", operandB);
 }
 void emu_raise(uint8_t vector) {}
 
@@ -277,7 +312,7 @@ int emu_loop() {
     while(running) {
         //uint32_t instruction = get_instruction(registers[IP]);
         
-        exec_instruction(0x8800CDE7);
+        exec_instruction(0x8A80CDE7);
         running = false;
     }
     return 0;

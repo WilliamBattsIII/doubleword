@@ -15,7 +15,8 @@
 #define CPF (PROC_SPEED_HZ / TPS)
 
 extern char* registernames[];
-
+extern char* optypenames[];
+extern char* condcodenames[];
 
 enum {
     R0,
@@ -141,6 +142,32 @@ enum {
     CALL = 0x2F,
     RCALL = 0x30,
     RSVD = 0x31
+};
+
+enum cond_codes {
+    ALWAYS,
+    PLACEHOLDER1,
+    PLACEHOLDER2,
+    PLACEHOLDER3,
+    PLACEHOLDER4,
+    PLACEHOLDER5,
+    PLACEHOLDER6,
+    PLACEHOLDER7,
+    PLACEHOLDER8,
+    PLACEHOLDER9,
+    PLACEHOLDER10,
+    PLACEHOLDER11,
+    PLACEHOLDER12,
+    PLACEHOLDER13,
+    PLACEHOLDER14,
+    PLACEHOLDER15
+};
+
+enum optypes {
+    REG_PTR,
+    REGISTER,
+    IMMED_B,
+    IMMED_PTR
 };
 
 

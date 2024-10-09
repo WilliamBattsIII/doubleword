@@ -10,13 +10,15 @@ The first 16 bits of each instruction is a control word, indicating the operatio
 ### control word
 bits|function
 ---|---
-`[0:5]`|opcode
-`[6:7]`|source operand type
-`[8:9]`|target operand type
-`[10:11]`|reserved for instruction-specific info
-`[12:15]`|condition code
+`[0:5]`|opcode (6 bits)
+`[6:7]`|A operand type (2 bits)
+`[8:9]`|B operand type (2 bits)
+`[10:11]`|reserved for instruction-specific info (2 bits)
+`[12:15]`|condition code (4 bits)
 
 (table assumes bit 0 is the MSB)
+(bits 16:23 = A operand | bits 24:31)
+
 ### operand types
 value|type|size (bit-width of value in instruction)|description
 ---|---|---|---
