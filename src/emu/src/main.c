@@ -6,7 +6,7 @@
 
 #include "cpu.h"
 #include "util.h"
-
+#include "mem.h"
 
 int main(void) { // TODO: program arguments to change size at runtime
     printf("Estimated emulated CPU cycles per second: %d\n", CPS);

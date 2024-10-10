@@ -1,9 +1,10 @@
 #include "cpu.h"
 #include "util.h"
+#include "mem.h"
 
 uint32_t registers [NUM_REGISTERS];
 bool running = true;
-uint8_t* memory;
+
 uint64_t cyclecount = 0;
 
 char* registernames[] = {
@@ -157,13 +158,12 @@ char *condcodenames[] = {
     "PLACEHOLDER15"
 };
 
-void init_mem() {
-    memory = malloc(MEMORY_SIZE_KB * 1024 * sizeof(uint8_t)); // set memory pointer
+void init_reg() {
     for(int i = 0; i < NUM_REGISTERS; i++) {
         registers[NUM_REGISTERS] = 0; // properly zero out all registers
-    }
-    // todo: put test code or something in memory as a temporary way to get around loading files
+    }   
 }
+
 
 int calc_cycles(uint8_t opcode) {
     // add logic to calculate cycles for things involving specific operand types?
@@ -272,29 +272,43 @@ int calc_cycles(uint8_t opcode) {
             return 0; // invalid instruction
     }
 }
-// MSB -> LSB || opcode, operand types, instruction-specific data, operand 1, operand 2
-void exec_instruction(uint32_t instruction) {
-    int cycles = 0;
+
+void dump_registers() {
     printf("Register dump:\n");
     for(int i = 0; i < NUM_REGISTERS; i++) { // print registers
         printf("%s: 0x%X\n", registernames[i], registers[i]);
     }
-    printf("Instruction info:\nInstruction: 0x%X\n", instruction); // print instruction
+}
+
+void print_instruction_info(uint32_t instr, uint8_t opc, uint8_t cyc, uint8_t ta, uint8_t tb, uint8_t cc,  uint8_t oa, uint8_t ob) {
+    printf("Instruction info:\nInstruction: 0x%X\n", instr); 
+    printf("Opcode: 0x%X (mnemonic: %s) (%d cycles)\n", opc, opcodenames[opc], cyc); // print opcode
+    printf("A operand type: %s\n", optypenames[ta]);
+    printf("B operand type: %s\n", optypenames[tb]);
+    printf("Condition code: %s\n", condcodenames[cc]);
+    printf("A operand value: 0x%X\n", oa);
+    printf("B operand value: 0x%X\n", ob);
+}
+
+
+// MSB -> LSB || opcode, operand types, instruction-specific data, operand 1, operand 2
+void exec_instruction(uint32_t instruction) {
+    int cycles = 0;
+    // print instruction
     uint8_t opcode = extractbits(instruction, 26, 31); // opcode is at MSB
     cycles = calc_cycles(opcode);
     cyclecount += cycles;
-    printf("Opcode: 0x%X (mnemonic: %s) (%d cycles)\n", opcode, opcodenames[opcode], cycles); // print opcode
+    
     uint8_t typeA = extractbits(instruction, 24, 25);
     uint8_t typeB = extractbits(instruction, 22, 23);
     uint8_t cond_code = extractbits(instruction, 16, 21);
     uint8_t operandA = extractbits(instruction, 8, 15);
     uint8_t operandB = extractbits(instruction, 0, 7);
-    printf("A operand type: %s\n", optypenames[typeA]);
-    printf("B operand type: %s\n", optypenames[typeB]);
-    printf("Condition code: %s\n", condcodenames[cond_code]);
-    printf("A operand value: 0x%X\n", operandA);
-    printf("B operand value: 0x%X\n", operandB);
+    
+    dump_registers();
+    print_instruction_info(instruction, opcode, cycles, typeA, typeB, cond_code, operandA, operandB);
 }
+
 void emu_raise(uint8_t vector) {}
 
 // note for below: memory_address is from the emulator, and is really an index into the "real" memory pointer

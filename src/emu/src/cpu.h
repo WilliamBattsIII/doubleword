@@ -6,7 +6,6 @@
 #include <time.h>
 #include <stdbool.h>
 
-#define MEMORY_SIZE_KB 32768 // 32 megabytes
 #define PROC_SPEED_HZ 12500000 // 12.5 MHz
 
 #define FPS 60 // frames per second
@@ -176,11 +175,10 @@ extern uint32_t registers[];
 
 extern bool running;
 
-extern uint8_t* memory;
+
 extern uint64_t cyclecount;
 
 uint32_t extractbits(uint32_t orig, unsigned from, unsigned to);
-void init_mem();
 void exec_instruction(uint32_t instruction);
 void emu_raise(uint8_t vector);
 uint32_t get_instruction(uint32_t memory_address);
