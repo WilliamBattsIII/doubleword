@@ -273,6 +273,7 @@ int calc_cycles(uint8_t opcode) {
     }
 }
 
+// debug
 void dump_registers() {
     printf("Register dump:\n");
     for(int i = 0; i < NUM_REGISTERS; i++) { // print registers
@@ -280,6 +281,7 @@ void dump_registers() {
     }
 }
 
+// debug
 void print_instruction_info(uint32_t instr, uint8_t opc, uint8_t cyc, uint8_t ta, uint8_t tb, uint8_t cc,  uint8_t oa, uint8_t ob) {
     printf("Instruction info:\nInstruction: 0x%X\n", instr); 
     printf("Opcode: 0x%X (mnemonic: %s) (%d cycles)\n", opc, opcodenames[opc], cyc); // print opcode
@@ -305,7 +307,7 @@ void exec_instruction(uint32_t instruction) {
     uint8_t operandA = extractbits(instruction, 8, 15);
     uint8_t operandB = extractbits(instruction, 0, 7);
     
-    dump_registers();
+    dump_registers(); // this and the following line is debug stuff
     print_instruction_info(instruction, opcode, cycles, typeA, typeB, cond_code, operandA, operandB);
 }
 
@@ -313,13 +315,7 @@ void emu_raise(uint8_t vector) {}
 
 // note for below: memory_address is from the emulator, and is really an index into the "real" memory pointer
 uint32_t get_instruction(uint32_t memory_address) {
-    if(memory_address % 4 == 0) {
-        // logic goes here
-    }
-    else {
-        emu_raise(0x06); // raise Alignment Fault
-    }
-    return 0; // placeholder, remove this
+    return getdword(memory_address);
 }
 
 int emu_loop() {
