@@ -169,6 +169,25 @@ enum optypes {
     IMMED_PTR
 };
 
+enum flags { // bit-indices of different cpu flags
+    FLAGS_ZERO = 0,
+    FLAGS_PARITY = 1,
+    FLAGS_CARRY = 2,
+    FLAGS_UNDERFLOW = 3,
+    FLAGS_OVERFLOW = 4,
+    FLAGS_SIGN = 5,
+    FLAGS_CPL = 15, // mat granularity = [16:17]
+    FLAGS_INT_EN = 19,
+    FLAGS_MEM_PROT = 20,
+    FLAGS_DEBUG = 21
+};
+
+enum mat_gran {
+    MAT_DISABLED, // MAT disabled
+    MAT_4K, // 4kb/bit, 1 mb bitmap space
+    MAT_16K, // 16kb/entry, 256kb bitmap space
+    MAT_64K // 64kb/entry, 64kb bitmap space
+};
 
 extern uint32_t registers[];
 

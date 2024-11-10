@@ -122,7 +122,7 @@ keyboard|`0xFD`
 hard disk|`0xFE`
 timer (PIT)|`0xFF`
 
-As the `doublebox` architecture lacks a sophisticated interrupt controller chip, specific interrupts are unable to be masked - interrupts can only be disabled or enabled. (this only applies to hardware/software interrupts - exceptions still work)
+As the `doubleword` architecture lacks a sophisticated interrupt controller chip, specific interrupts are unable to be masked - interrupts can only be disabled or enabled. (this only applies to hardware/software interrupts - exceptions still work)
 Instead, programs running on the computer must use the I/O bus to enable or disable specific devices.
 
 ### what happens when an interrupt happens?
@@ -140,7 +140,12 @@ The IVT can reside anywhere in memory that aligns to four-byte boundaries.
 Each pointer is aligned to 4-byte boundaries, so there's a new pointer every 4 bytes.
 
 # memory protection, and the Memory Access Table (MAT)
-
+bits|granularity|bitmap size
+---|---|---
+`00`|MAT disabled|MAT disabled
+`01`|4KB/entry|1MB bitmap
+`10`|16KB/entry|256KB bitmap
+`11`|64KB/entry|64KB bitmap
 The MAT is a designated region of memory containing a bitmap of 
 
 
@@ -153,7 +158,7 @@ The `doubleword` architecture has a 3-step boot process. First, a firmware progr
 The firmware initializes hardware and prepares the computer for the second part of the boot process.
 The last thing that the system firmware does is scan for any attached hard drives marked as bootable. If multiple are found, a menu is shown which will ask the user to pick a volume. If just one is found, it will automatically be booted. If there are no bootable drives, the firmware will display an error and hang. (note to self: add more types of storage later?)
 ### "bootable" requirements
-A drive is considered bootable if its first sector (referred to as sector zero) begins with `0xEEEE`. The rest of the drive may be used for any purpose.
+A drive is considered bootable if its first sector (referred to as sector zero) begins with `0xEEEE`. The rest of the drive is not checked and may be used for any purpose.
 ### from the bootloader onwards
 Continuing on, the bootloader is now in control of execution. It will load the rest of the operating system from disk, and execution will proceed from there, with the system fully booted.
 

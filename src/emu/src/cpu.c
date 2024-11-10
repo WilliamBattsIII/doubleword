@@ -164,6 +164,37 @@ void init_reg() {
     }   
 }
 
+void set_bit(int reg, int bit, bool value) {
+    if(value) { // set bit
+        registers[reg] |= 1 << bit;
+    }
+    else { // clear bit
+        registers[reg] &= ~(1 << bit); 
+    }
+}
+
+void set_mat_granulatity(int value) {
+    switch(value) {
+        case MAT_DISABLED: // 00
+            set_bit(SCR, 16, false);
+            set_bit(SCR, 17, false);
+            break;
+        case MAT_4K: // 01
+            set_bit(SCR, 16, false);
+            set_bit(SCR, 17, true);
+            break;
+        case MAT_16K: // 10
+            set_bit(SCR, 16, true);
+            set_bit(SCR, 17, false);
+            break;
+        case MAT_64K: // 11
+            set_bit(SCR, 16, true);
+            set_bit(SCR, 17, true);
+            break;
+        default: // shouldn't even be possible haha
+            break;
+    }
+}
 
 int calc_cycles(uint8_t opcode) {
     // add logic to calculate cycles for things involving specific operand types?
@@ -272,7 +303,6 @@ int calc_cycles(uint8_t opcode) {
             return 0; // invalid instruction
     }
 }
-
 // debug
 void dump_registers() {
     printf("Register dump:\n");
@@ -280,7 +310,6 @@ void dump_registers() {
         printf("%s: 0x%X\n", registernames[i], registers[i]);
     }
 }
-
 // debug
 void print_instruction_info(uint32_t instr, uint8_t opc, uint8_t cyc, uint8_t ta, uint8_t tb, uint8_t cc,  uint8_t oa, uint8_t ob) {
     printf("Cycle #%ld\n\n", cyclecount);
@@ -292,8 +321,6 @@ void print_instruction_info(uint32_t instr, uint8_t opc, uint8_t cyc, uint8_t ta
     printf("A operand value: 0x%X\n", oa);
     printf("B operand value: 0x%X\n", ob);
 }
-
-
 // MSB -> LSB || opcode, operand types, instruction-specific data, operand 1, operand 2
 void exec_instruction(uint32_t instruction) {
     int cycles = 0;
@@ -316,10 +343,15 @@ void exec_instruction(uint32_t instruction) {
             break;
         case ADD:
             if(typeA == REGISTER && typeB == REGISTER) {
-                registers[operandA] = registers[operandA] + registers[operandB];
-                if(instr_info == 0b01) {
-                    // how to do flags?
+                
+                if(instr_info == 0b01) { // add.s -> modify flags
+                    if(((registers[operandA] + registers[operandB]) % 2^32) < (registers[operandA] % 2^32) || ((registers[operandA] + registers[operandB]) % 2^32) < (registers[operandB] % 2^32)) { //a + b mod 2^n < a mod 2^n OR a + b mod 2^n < b mod 2^n
+                        // set carry flag (the overflow flag is only for signed arithmetic)
+                    } 
+                    //if() {} zero
+                    //if() {} parity
                 }
+                registers[operandB] = registers[operandA] + registers[operandB]; // do this last, so nothing breaks
             }
             else {
                 emu_raise(0x07); // invalid instruction
@@ -451,6 +483,18 @@ void mem_rw_test() {
     write_byte(byte, addr);
     printf("Memory read: 0x%X\n", read_byte(addr));
 }
+void mat_gtest() {
+    printf("0x%X\n", registers[SCR]); 
+    set_mat_granulatity(MAT_DISABLED);
+    printf("0x%X\n", registers[SCR]); 
+    set_mat_granulatity(MAT_4K);
+    printf("0x%X\n", registers[SCR]); 
+    set_mat_granulatity(MAT_16K);
+    printf("0x%X\n", registers[SCR]); 
+    set_mat_granulatity(MAT_64K);
+    printf("0x%X\n", registers[SCR]);                
+}
+
 
 int emu_loop() {
     while(running) {
@@ -458,7 +502,7 @@ int emu_loop() {
         exec_instruction(instruction);
         // if debug port has byte: print character
         //mem_rw_test();
-
+        //mat_gtest();
         running = false;
     }
     return 0;
