@@ -12,4 +12,4 @@ def parseline(line):
     splits = line.split(" ")
     for i in range(len(splits)):
         if(splits[i] is ".org"):
-            pass # convert value to memory or address or whatever
+            baseaddr = int(splits[i + 1], 16)

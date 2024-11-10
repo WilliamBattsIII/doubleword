@@ -1,8 +1,7 @@
 # CPU architecture
 `doubleword` is a 32-bit reduced instruction-set CPU architecture, designed to be simple enough to be understood by one person, while remaining functional enough to run complex software.
 Peripherals are typically accessed through port-mapped I/O. Details on this can be found in `IO.md`.
-Memory values are stored in little-endian byte order. (also: as such, the stack grows "down" in memory)
-(note to self: endianness is only for memory, so remember to swap bytes in the emulator when loading/storing values to/from registers)
+Memory values are stored in little-endian byte order, as are IO accesses.
 
 # instruction decoding & instruction set
 `doubleword` instructions are fixed-length, at 32 bits. Additionally, instructions should be aligned to 4-byte boundaries and memory accesses must be aligned to their size, otherwise an Alignment Fault will occur.
@@ -17,15 +16,15 @@ bits|function
 `[12:15]`|condition code (4 bits)
 
 (table assumes bit 0 is the MSB)
-(bits 16:23 = A operand | bits 24:31)
+(bits 16:23 = A operand, bits 24:31 is B operand)
 
 ### operand types
 value|type|size (bit-width of value in instruction)|description
 ---|---|---|---
 `00`|reg. ptr.|8 bits|register containing a 32-bit memory address (used in mov, store, etc)
 `01`|register|8 bits|the register whose contents will be operated on
-`10`|8-bit immed.|8 bits|immediate meant to hold relative addresses for load/store/IO instructions
-`11`|immed. memory ptr|16 bits|16 bit immed. value, only used in relative memory addressing (and other rare scenarios)
+`10`|8-bit immed.|8 bits|immediate meant to hold relative addresses for load/store/IO instructions (not used for anything else)
+`11`|immed. memory ptr|16 bits|16 bit immed. value, only used in relative memory addressing
 
 ### condition codes
 (not done yet)
@@ -72,7 +71,7 @@ The MAT is a bitmap which enables/disables memory protection for certain regions
 `%scr` is the System Control Register, and contains information relevant to the state of the CPU. `%scr` is a privileged register, meaning that attempting to read or write to it while in User mode will result in a Privilege Exception.
 Some instructions may depend on the contents of this register (ex: determining if a privileged instruction can run, or conditional instructions utilizing CPU flags)
 (bits in order from MSB: ALU flags, CPU privilege level, MAT granularity, interrupt enable flag, memory protection enable flag, debug flag)
-(ALU flags: zero, parity, carry, overflow, sign)
+(ALU flags: zero, parity, carry, underflow, overflow, sign)
 
 
 
@@ -107,7 +106,7 @@ Reserved exception vector.
 When the CPU attempts to access memory that's not properly aligned to the width of the data, an Alignment Fault occurs.
 
 ### 0x7: invalid opcode
-An Invalid Opcode exception occurs when the CPU attempts to execute an instruction that doesn't exist. Additionally, if invalid control values are set, or invalid operands are included, those would also constitute an Invalid Opcode exception.
+An Invalid Opcode exception occurs when the CPU attempts to execute an instruction that doesn't exist. Additionally, if invalid control values are set, or invalid operands are included, those would also constitute a reason for an Invalid Opcode exception.
 
 ## interrupts
 These are standardized interrupts used by system peripherals. See `IO.md` for more details.
@@ -149,7 +148,7 @@ The MAT is a designated region of memory containing a bitmap of
 ### system setup
 By default, the `doubleword` emulator is set up with 32 MB of RAM. As listed in `IO.md`, peripherals are disabled via the power controller and must be initialized before use.
 ### firmware setup
-The `doubleword` architecture has a 3-step boot process. First, a firmware program stored in ROM is loaded into memory beginning at `0x1000`. At this point, CPU execution begins. All general-purpose registers are zeroed out, in addition to `%itp`. Interrupts are disabled. The stack pointer is set to to the next 32-bit boundary below the loading point of the firmware, at `0x0FFC`, as it grows downward in memory.
+The `doubleword` architecture has a 3-step boot process. First, a firmware program stored in ROM is loaded into memory beginning at `0x1000`. At this point, CPU execution begins. All general-purpose registers are zeroed out, in addition to `%itp`. Interrupts are disabled. The stack pointer is set to to the next 4-byte boundary below the loading point of the firmware, at `0xFFC` (stack grows downward in memory)
 ### system initialization
 The firmware initializes hardware and prepares the computer for the second part of the boot process.
 The last thing that the system firmware does is scan for any attached hard drives marked as bootable. If multiple are found, a menu is shown which will ask the user to pick a volume. If just one is found, it will automatically be booted. If there are no bootable drives, the firmware will display an error and hang. (note to self: add more types of storage later?)

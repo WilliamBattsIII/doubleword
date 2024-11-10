@@ -283,7 +283,8 @@ void dump_registers() {
 
 // debug
 void print_instruction_info(uint32_t instr, uint8_t opc, uint8_t cyc, uint8_t ta, uint8_t tb, uint8_t cc,  uint8_t oa, uint8_t ob) {
-    printf("Instruction info:\nInstruction: 0x%X\n", instr); 
+    printf("Cycle #%ld\n\n", cyclecount);
+    printf("Instruction: 0x%X\n", instr); 
     printf("Opcode: 0x%X (mnemonic: %s) (%d cycles)\n", opc, opcodenames[opc], cyc); // print opcode
     printf("A operand type: %s\n", optypenames[ta]);
     printf("B operand type: %s\n", optypenames[tb]);
@@ -298,31 +299,166 @@ void exec_instruction(uint32_t instruction) {
     int cycles = 0;
     // print instruction
     uint8_t opcode = extractbits(instruction, 26, 31); // opcode is at MSB
-    cycles = calc_cycles(opcode);
-    cyclecount += cycles;
-    
     uint8_t typeA = extractbits(instruction, 24, 25);
     uint8_t typeB = extractbits(instruction, 22, 23);
-    uint8_t cond_code = extractbits(instruction, 16, 21);
+    uint8_t instr_info = extractbits(instruction, 21, 20);
+    uint8_t cond_code = extractbits(instruction, 16, 19);
+    
+
     uint8_t operandA = extractbits(instruction, 8, 15);
     uint8_t operandB = extractbits(instruction, 0, 7);
     
-    dump_registers(); // this and the following line is debug stuff
+    cycles = calc_cycles(opcode);
+    //dump_registers(); // this and the following line is debug stuff
     print_instruction_info(instruction, opcode, cycles, typeA, typeB, cond_code, operandA, operandB);
+    switch(opcode) {
+        case NOP:
+            break;
+        case ADD:
+            if(typeA == REGISTER && typeB == REGISTER) {
+                registers[operandA] = registers[operandA] + registers[operandB];
+                if(instr_info == 0b01) {
+                    // how to do flags?
+                }
+            }
+            else {
+                emu_raise(0x07); // invalid instruction
+            }
+            break;  
+        case ADDI:
+            break;  
+        case MUL:
+            break;  
+        case IMUL:
+            break;  
+        case DIV:
+            break;  
+        case IDIV:
+            break;  
+        case CMP:
+            break;  
+        case ICMP:
+            break;  
+        case BTS:
+            break;  
+        case BTC:
+            break;  
+        case BTT:
+            break;  
+        case SLA:
+            break;  
+        case SRA:
+            break;  
+        case SRL:
+            break;  
+        case INC:
+            break;  
+        case DEC:
+            break;  
+        case LDB:
+            break;  
+        case LBW:
+            break;  
+        case LDD:
+            break;  
+        case STB:
+            break;  
+        case STW:
+            break;  
+        case STD:
+            break;  
+        case HLT:
+            break;  
+        case RET:
+            break;  
+        case IRET:
+            break;  
+        case ITE:
+            break;  
+        case ITD:
+            break;  
+        case SPL:
+            break;  
+        case LITP:
+            break;  
+        case LMTP:
+            break;  
+        case DEBUG:
+            break; 
+        case PUSH:
+            break;  
+        case POP:
+            break;  
+        case IN:
+            break;  
+        case OUT:
+            break;  
+        case ROR:
+            break;  
+        case ROL:
+            break;  
+        case AND:
+            break;  
+        case NOT:
+            break;  
+        case OR:
+            break;  
+        case XOR:
+            break;  
+        case SUB:
+            break;  
+        case ISUB:
+            break;  
+        case JMP:
+            break;  
+        case RJMP:
+            break;  
+        case RLAC:
+            break;  
+        case CALL:
+            break;  
+        case RCALL:
+            break;  
+        case RSVD:
+            break;  
+        default:
+            break;   // invalid instruction
+    }
+    registers[IP] += cycles;
 }
 
-void emu_raise(uint8_t vector) {}
+void emu_raise(uint8_t vector) {} // raise an interrupt
 
 // note for below: memory_address is from the emulator, and is really an index into the "real" memory pointer
 uint32_t get_instruction(uint32_t memory_address) {
-    return getdword(memory_address);
+    return read_dword(memory_address);
+}
+
+void mem_rw_test() {
+    uint32_t addr = 0x0001000;
+    uint32_t dword = 0xAABBCCDD;
+    printf("\nWriting dword 0x%X\n", dword);
+    write_dword(dword, addr);
+    printf("Memory read: 0x%X\n", read_dword(addr));
+
+    uint32_t word = 0x1234;
+    printf("\nWriting word 0x%X\n", word);
+    write_dword(word, addr);
+    printf("Memory read: 0x%X\n", read_word(addr));
+
+    uint32_t byte = 0xAB;
+    printf("\nWriting byte 0x%X\n", byte);
+    write_byte(byte, addr);
+    printf("Memory read: 0x%X\n", read_byte(addr));
 }
 
 int emu_loop() {
     while(running) {
-        //uint32_t instruction = get_instruction(registers[IP]);
-        
-        exec_instruction(0x8A80CDE7);
+        uint32_t instruction = get_instruction(memory[registers[IP]]);
+        exec_instruction(instruction);
+        // if debug port has byte: print character
+        //mem_rw_test();
+
         running = false;
     }
     return 0;

@@ -36,7 +36,7 @@ As with most RISC/RISC-like architectures, data operations can only be performed
 Immediates aren't really a thing, save for a few instructions - it should be assumed below that all operands are registers.
 
 ## note about jmp/rjmp
-If you jump to a location that can fit in a relative jump immediate (16 bits, so +/- ~32K from current IP), the assembler may optimize the jump into a relative jump. This may explain discrepancies in decompiliations of programs
+If you jump to a location that can fit in a relative jump immediate (16 bits, so +/- ~32K from current IP), the assembler may optimize the jump into a relative jump. 
 
 # doubleword ISA
 
