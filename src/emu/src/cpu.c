@@ -164,16 +164,15 @@ void init_reg() {
     }   
 }
 
-void set_bit(int reg, int bit, bool value) {
-    if(value) { // set bit
-        registers[reg] |= 1 << bit;
-    }
-    else { // clear bit
-        registers[reg] &= ~(1 << bit); 
-    }
-}
 
+// sets the MAT granularity to the requested value - updates memprotect enable flag if relevant
 void set_mat_granulatity(int value) {
+    if(value != 0) {
+        set_bit(registers[SCR], 20, true);
+    }
+    else {
+        set_bit(registers[SCR], 20, false);
+    }
     switch(value) {
         case MAT_DISABLED: // 00
             set_bit(SCR, 16, false);
@@ -337,7 +336,7 @@ void exec_instruction(uint32_t instruction) {
     
     cycles = calc_cycles(opcode);
     //dump_registers(); // this and the following line is debug stuff
-    print_instruction_info(instruction, opcode, cycles, typeA, typeB, cond_code, operandA, operandB);
+    
     switch(opcode) {
         case NOP:
             break;
@@ -456,7 +455,8 @@ void exec_instruction(uint32_t instruction) {
         default:
             break;   // invalid instruction
     }
-    registers[IP] += cycles;
+    cyclecount += cycles;
+    registers[IP] += 4;
 }
 
 void emu_raise(uint8_t vector) {} // raise an interrupt
@@ -483,8 +483,7 @@ void mem_rw_test() {
     write_byte(byte, addr);
     printf("Memory read: 0x%X\n", read_byte(addr));
 }
-void mat_gtest() {
-    printf("0x%X\n", registers[SCR]); 
+void mat_test() {
     set_mat_granulatity(MAT_DISABLED);
     printf("0x%X\n", registers[SCR]); 
     set_mat_granulatity(MAT_4K);
@@ -498,11 +497,12 @@ void mat_gtest() {
 
 int emu_loop() {
     while(running) {
-        uint32_t instruction = get_instruction(memory[registers[IP]]);
+        uint32_t instruction = get_instruction(registers[IP]);
+        printf("\nIP=0x%X\n",registers[IP]);
         exec_instruction(instruction);
         // if debug port has byte: print character
         //mem_rw_test();
-        //mat_gtest();
+        //mat_test();
         running = false;
     }
     return 0;

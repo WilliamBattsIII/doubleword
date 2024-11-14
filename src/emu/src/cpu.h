@@ -178,8 +178,9 @@ enum flags { // bit-indices of different cpu flags
     FLAGS_SIGN = 5,
     FLAGS_CPL = 15, // mat granularity = [16:17]
     FLAGS_INT_EN = 19,
-    FLAGS_MEM_PROT = 20,
-    FLAGS_DEBUG = 21
+    FLAGS_MEMP_EN = 20,
+    FLAGS_DEBUG = 21,
+    FLAGS_INT = 22
 };
 
 enum mat_gran {
@@ -196,7 +197,7 @@ extern bool running;
 
 
 extern uint64_t cyclecount;
-
+void set_bit(int reg, int bit, bool value);
 uint32_t extractbits(uint32_t orig, unsigned from, unsigned to);
 void exec_instruction(uint32_t instruction);
 void emu_raise(uint8_t vector);
